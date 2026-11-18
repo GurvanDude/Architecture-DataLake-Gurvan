@@ -1,0 +1,26 @@
+# Date      : 2026-11-18 12:29:04 CET
+# Machine   : Pc-gugu (Ubuntu 26.04.1 LTS)
+# Utilisateur : gurvan
+$ for f in $HADOOP_HOME/logs/*.log; do echo "--- $(basename $f)"; grep -cE ' (ERROR|FATAL) ' $f | sed 's/^/lignes ERROR ou FATAL : /'; grep -E ' (WARN|ERROR|FATAL) ' $f | cut -c1-200 | sort -u -k5 | head -5; done
+
+--- hadoop-gurvan-datanode-Pc-gugu.log
+lignes ERROR ou FATAL : 2
+2026-11-17 12:13:31,797 WARN org.apache.hadoop.hdfs.server.datanode.web.DatanodeHttpServer: Got null for restCsrfPreventionFilter - will not do any filtering.
+2026-11-17 15:13:28,005 ERROR org.apache.hadoop.hdfs.server.datanode.DataNode: RECEIVED SIGNAL 15: SIGTERM
+2026-11-17 15:13:28,005 ERROR org.apache.hadoop.hdfs.server.datanode.DataNode: RECEIVED SIGNAL 1: SIGHUP
+2026-11-17 12:13:31,534 WARN org.apache.hadoop.security.authentication.server.AuthenticationFilter: Unable to initialize FileSignerSecretProvider, falling back to use random secrets. Reason: Could not
+2026-11-17 12:13:32,665 WARN org.apache.hadoop.hdfs.server.datanode.DirectoryScanner: dfs.datanode.directoryscan.throttle.limit.ms.per.sec set to value above 1000 ms/sec. Assuming default value of -1
+--- hadoop-gurvan-namenode-Pc-gugu.log
+lignes ERROR ou FATAL : 2
+2026-11-17 12:13:30,366 WARN org.apache.hadoop.hdfs.server.namenode.FSNamesystem: Only one image storage directory (dfs.namenode.name.dir) configured. Beware of data loss due to lack of redundant stor
+2026-11-17 12:13:30,366 WARN org.apache.hadoop.hdfs.server.namenode.FSNamesystem: Only one namespace edits storage directory (dfs.namenode.edits.dir) configured. Beware of data loss due to lack of red
+2026-11-17 15:13:27,999 ERROR org.apache.hadoop.hdfs.server.namenode.NameNode: RECEIVED SIGNAL 15: SIGTERM
+2026-11-17 15:13:27,999 ERROR org.apache.hadoop.hdfs.server.namenode.NameNode: RECEIVED SIGNAL 1: SIGHUP
+2026-11-17 12:13:28,964 WARN org.apache.hadoop.security.authentication.server.AuthenticationFilter: Unable to initialize FileSignerSecretProvider, falling back to use random secrets. Reason: Could not
+--- hadoop-gurvan-secondarynamenode-Pc-gugu.log
+lignes ERROR ou FATAL : 2
+2026-11-17 15:00:37,610 WARN org.apache.hadoop.hdfs.server.namenode.SecondaryNameNode: Checkpoint done. New Image Size: 1102
+2026-11-17 13:00:36,232 WARN org.apache.hadoop.hdfs.server.namenode.SecondaryNameNode: Checkpoint done. New Image Size: 401
+2026-11-17 15:13:27,995 ERROR org.apache.hadoop.hdfs.server.namenode.SecondaryNameNode: RECEIVED SIGNAL 15: SIGTERM
+2026-11-17 15:13:27,995 ERROR org.apache.hadoop.hdfs.server.namenode.SecondaryNameNode: RECEIVED SIGNAL 1: SIGHUP
+2026-11-17 12:13:34,854 WARN org.apache.hadoop.security.authentication.server.AuthenticationFilter: Unable to initialize FileSignerSecretProvider, falling back to use random secrets. Reason: Could not

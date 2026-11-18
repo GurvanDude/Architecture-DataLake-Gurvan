@@ -1,0 +1,6 @@
+# Date      : 2026-11-18 12:28:55 CET
+# Machine   : Pc-gugu (Ubuntu 26.04.1 LTS)
+# Utilisateur : gurvan
+$ hdfs dfsadmin -safemode get
+
+Safe mode is OFF

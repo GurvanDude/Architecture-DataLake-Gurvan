@@ -1,0 +1,9 @@
+# Date      : 2026-11-18 12:28:54 CET
+# Machine   : Pc-gugu (Ubuntu 26.04.1 LTS)
+# Utilisateur : gurvan
+$ jps
+
+817 DataNode
+1513 Jps
+1085 SecondaryNameNode
+671 NameNode

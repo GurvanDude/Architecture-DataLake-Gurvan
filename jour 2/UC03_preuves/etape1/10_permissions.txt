@@ -1,0 +1,11 @@
+# Date      : 2026-11-18 12:29:04 CET
+# Machine   : Pc-gugu (Ubuntu 26.04.1 LTS)
+# Utilisateur : gurvan
+
+dfs.permissions.enabled            true
+dfs.permissions.superusergroup     supergroup
+hadoop.security.authentication     simple
+dfs.namenode.checkpoint.period     3600
+
+$ hdfs dfs -ls -d /
+drwxr-xr-x   - gurvan supergroup          0 2026-11-17 14:25 /

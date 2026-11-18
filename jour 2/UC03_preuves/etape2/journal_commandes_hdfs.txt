@@ -1,0 +1,228 @@
+# UC-03 Etape 2 - Journal des commandes HDFS
+# Machine : Pc-gugu (Ubuntu 26.04.1 LTS), utilisateur Linux : gurvan, Hadoop 3.5.0
+
+==================================================================
+[01] Etat general du systeme HDFS
+Date : 2026-11-18 12:29:09
+$ hdfs dfsadmin -report | sed -n '1,8p'
+------------------------------------------------------------------
+Configured Capacity: 1081101176832 (1006.85 GB)
+Present Capacity: 1020297719808 (950.23 GB)
+DFS Remaining: 1020297687040 (950.23 GB)
+DFS Used: 32768 (32 KB)
+DFS Used%: 0.00%
+Replicated Blocks:
+	Under replicated blocks: 0
+	Blocks with corrupt replicas: 0
+(code retour : 0)
+
+==================================================================
+[02] Mode sans echec
+Date : 2026-11-18 12:29:10
+$ hdfs dfsadmin -safemode get
+------------------------------------------------------------------
+Safe mode is OFF
+(code retour : 0)
+
+==================================================================
+[03] Controle de coherence du systeme de fichiers
+Date : 2026-11-18 12:29:12
+$ hdfs fsck / | tail -n 14
+------------------------------------------------------------------
+Connecting to namenode via http://localhost:9870/fsck?ugi=gurvan&path=%2F
+ Total block groups (validated):	0
+ Minimally erasure-coded block groups:	0
+ Over-erasure-coded block groups:	0
+ Under-erasure-coded block groups:	0
+ Unsatisfactory placement block groups:	0
+ Average block group size:	0.0
+ Missing block groups:		0
+ Corrupt block groups:		0
+ Missing internal blocks:	0
+ Blocks queued for replication:	0
+FSCK ended at Wed Nov 18 12:29:13 CET 2026 in 7 milliseconds
+
+
+The filesystem under path '/' is HEALTHY
+(code retour : 0)
+
+==================================================================
+[04] DataNodes vivants
+Date : 2026-11-18 12:29:14
+$ hdfs dfsadmin -report -live | sed -n '/Live datanodes/,$p' | sed -n '1,16p'
+------------------------------------------------------------------
+Live datanodes (1):
+
+Name: 127.0.0.1:9866 (localhost)
+Hostname: Pc-gugu.localdomain
+Decommission Status : Normal
+Configured Capacity: 1081101176832 (1006.85 GB)
+DFS Used: 32768 (32 KB)
+Non DFS Used: 5811101696 (5.41 GB)
+DFS Remaining: 1020297687040 (950.23 GB)
+DFS Used%: 0.00%
+DFS Remaining%: 94.38%
+Configured Cache Capacity: 0 (0 B)
+Cache Used: 0 (0 B)
+Cache Remaining: 0 (0 B)
+Cache Used%: 100.00%
+Cache Remaining%: 0.00%
+(code retour : 0)
+
+==================================================================
+[05] DataNodes morts
+Date : 2026-11-18 12:29:15
+$ hdfs dfsadmin -report -dead | grep -E 'Dead datanodes'
+------------------------------------------------------------------
+Dead datanodes (0):
+(code retour : 0)
+
+==================================================================
+[06] Topologie (rack de chaque DataNode)
+Date : 2026-11-18 12:29:17
+$ hdfs dfsadmin -printTopology
+------------------------------------------------------------------
+Rack: /default-rack
+   127.0.0.1:9866 (localhost) In Service
+
+(code retour : 0)
+
+==================================================================
+[07] Adresse du NameNode
+Date : 2026-11-18 12:29:18
+$ hdfs getconf -namenodes
+------------------------------------------------------------------
+localhost
+(code retour : 0)
+
+==================================================================
+[08] Contenu de la racine (avant creation)
+Date : 2026-11-18 12:29:19
+$ hdfs dfs -ls /
+------------------------------------------------------------------
+Found 1 items
+drwxr-xr-x   - gurvan supergroup          0 2026-11-17 14:25 /retail-lake
+(code retour : 0)
+
+==================================================================
+[09] Creation du repertoire de travail du projet
+Date : 2026-11-18 12:29:21
+$ hdfs dfs -mkdir -p /retail-lake
+------------------------------------------------------------------
+(code retour : 0)
+
+==================================================================
+[10] Contenu de la racine (apres creation)
+Date : 2026-11-18 12:29:22
+$ hdfs dfs -ls /
+------------------------------------------------------------------
+Found 1 items
+drwxr-xr-x   - gurvan supergroup          0 2026-11-17 14:25 /retail-lake
+(code retour : 0)
+
+==================================================================
+[11] Contenu du repertoire de travail
+Date : 2026-11-18 12:29:24
+$ hdfs dfs -ls /retail-lake
+------------------------------------------------------------------
+Found 6 items
+drwxr-xr-x   - gurvan supergroup          0 2026-11-17 14:25 /retail-lake/bronze
+drwxr-xr-x   - gurvan supergroup          0 2026-11-17 14:25 /retail-lake/gold
+drwxr-xr-x   - gurvan supergroup          0 2026-11-17 14:25 /retail-lake/logs
+drwxr-xr-x   - gurvan supergroup          0 2026-11-17 14:25 /retail-lake/quality
+drwxr-xr-x   - gurvan supergroup          0 2026-11-17 14:25 /retail-lake/raw
+drwxr-xr-x   - gurvan supergroup          0 2026-11-17 14:25 /retail-lake/silver
+(code retour : 0)
+
+==================================================================
+[12] Proprietaire et droits du repertoire de travail
+Date : 2026-11-18 12:29:25
+$ hdfs dfs -ls -d /retail-lake
+------------------------------------------------------------------
+drwxr-xr-x   - gurvan supergroup          0 2026-11-17 14:25 /retail-lake
+(code retour : 0)
+
+==================================================================
+[13] Detail des droits (ACL)
+Date : 2026-11-18 12:29:26
+$ hdfs dfs -getfacl /retail-lake
+------------------------------------------------------------------
+# file: /retail-lake
+# owner: gurvan
+# group: supergroup
+user::rwx
+group::r-x
+other::r-x
+
+(code retour : 0)
+
+==================================================================
+[14] Statistiques du repertoire (type, droits, proprietaire, date)
+Date : 2026-11-18 12:29:28
+$ hdfs dfs -stat 'type=%F droits=%A proprietaire=%u groupe=%g modifie=%y' /retail-lake
+------------------------------------------------------------------
+type=directory droits=rwxr-xr-x proprietaire=gurvan groupe=supergroup modifie=2026-11-17 14:25:55
+(code retour : 0)
+
+==================================================================
+[15] Test volontaire : ecriture par un autre utilisateur (doit etre refusee)
+Date : 2026-11-18 12:29:30
+$ HADOOP_USER_NAME=invite hdfs dfs -mkdir /retail-lake/test_invite
+------------------------------------------------------------------
+mkdir: Permission denied: user=invite, access=WRITE, inode="/retail-lake":gurvan:supergroup:drwxr-xr-x
+(code retour : 1)
+
+==================================================================
+[16] Verification : le dossier de test n'a pas ete cree
+Date : 2026-11-18 12:29:31
+$ hdfs dfs -test -e /retail-lake/test_invite && echo 'present' || echo 'absent'
+------------------------------------------------------------------
+absent
+(code retour : 0)
+
+==================================================================
+[17] Taille du repertoire de travail
+Date : 2026-11-18 12:29:33
+$ hdfs dfs -du -h /retail-lake
+------------------------------------------------------------------
+0  0  /retail-lake/bronze
+0  0  /retail-lake/gold
+0  0  /retail-lake/logs
+0  0  /retail-lake/quality
+0  0  /retail-lake/raw
+0  0  /retail-lake/silver
+(code retour : 0)
+
+==================================================================
+[18] Taille totale (resume)
+Date : 2026-11-18 12:29:34
+$ hdfs dfs -du -s -h /retail-lake
+------------------------------------------------------------------
+0  0  /retail-lake
+(code retour : 0)
+
+==================================================================
+[19] Nombre de dossiers, fichiers et octets
+Date : 2026-11-18 12:29:36
+$ hdfs dfs -count -h /retail-lake
+------------------------------------------------------------------
+          11            0                  0 /retail-lake
+(code retour : 0)
+
+==================================================================
+[20] Espace disponible dans HDFS
+Date : 2026-11-18 12:29:37
+$ hdfs dfs -df -h /
+------------------------------------------------------------------
+Filesystem                 Size  Used  Available  Use%
+hdfs://localhost:9000  1006.9 G  32 K    950.2 G    0%
+(code retour : 0)
+
+==================================================================
+[21] Test volontaire : chemin inexistant (doit echouer)
+Date : 2026-11-18 12:29:39
+$ hdfs dfs -ls /retail-lake/inexistant
+------------------------------------------------------------------
+ls: `/retail-lake/inexistant': No such file or directory
+(code retour : 1)
+
